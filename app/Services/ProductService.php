@@ -9,7 +9,6 @@ use App\Exceptions\UserNotFoundException;
 use App\Interfaces\IProductService;
 use App\Models\Product;
 use App\Models\User;
-use Throwable;
 
 class ProductService implements IProductService
 {
