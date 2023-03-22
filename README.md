@@ -1,11 +1,12 @@
 # Running the application
 
-(**Highly recommended**) Run the application using [Sail](https://laravel.com/docs/10.x/sail).
+(**Highly recommended**) A Docker-based version of the assignment is available, and it can be run using a [Makefile](Makefile).
 
-1. Run `sail artiasn migrate:fresh --seed` to setup and seed the database.
-2. Run `sail pest` to run all the tests in the app container.
+1. If not already done, install [Docker](https://docs.docker.com/get-docker/) and [Docker Compose](https://docs.docker.com/compose/install/).
+2. Run `make setup` to build fresh images and build the application's container.
+3. Run `make test` to run all the tests in the container.
 
-*Check the dependencies if you decide to run the application using your local environment*
+*Check the dependencies and adjust the .env file if you decide to run the application using your local environment*
 
 # After setup
 
@@ -18,6 +19,7 @@
 
 # Dependencies
 
+* Composer
 * Laravel 10
 * PHP 8.1+
 * MySQL 8
@@ -53,7 +55,7 @@ For the authentication, I am using [Laravel Sanctum](https://laravel.com/docs/10
 
 # Authorization
 
-For the authorization, I am using a combination of [Laravel Policies](https://laravel.com/docs/10.x/authorization#creating-policies) and [Laravel Gate](https://laravel.com/docs/10.x/authorization#gates) with [Spatie's Permissions package](https://spatie.be/docs/laravel-permission/v5/introduction).
+For the authorization, I am using a combination of [Laravel Policies](https://laravel.com/docs/10.x/authorization#creating-policies) and [Spatie's Permissions package](https://spatie.be/docs/laravel-permission/v5/introduction).
 This allows me to cover User's actions based on its Roles and Permissions.
 
 *Hiting resources endpoints which are not owned by the user will lead into Unauthorized error.*
