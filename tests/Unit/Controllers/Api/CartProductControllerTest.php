@@ -40,7 +40,7 @@ test('can add product to cart', function () {
         'POST',
         route('api.carts.products.add-product', ['cart' => $cart]),
         ['product_id' => $product->getKey()]
-    )->assertCreated()->assertJson(fn (AssertableJson $json) => $json->where('id', $cart->getKey())
+    )->assertOk()->assertJson(fn (AssertableJson $json) => $json->where('id', $cart->getKey())
         ->where('products.0.id', $product->getKey())
     );
 });

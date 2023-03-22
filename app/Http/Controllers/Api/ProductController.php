@@ -30,7 +30,7 @@ class ProductController extends Controller
 
         try {
             $this->authorize('create', Product::class);
-            $product = $this->productService->store(['user_id' => auth()->user()->id, 'product' => $data]);
+            $product = $this->productService->store(['user_id' => auth()->user()->id, 'attributes' => $data]);
         } catch (AuthorizationException $exception) {
             return response()->json(['message' => $exception->getMessage()], 403);
         } catch (UserNotFoundException $exception) {

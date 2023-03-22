@@ -14,7 +14,7 @@ use Throwable;
 class ProductService implements IProductService
 {
     /**
-     * @throws Throwable
+     * @throws UserNotFoundException
      */
     public function store(array $data): Product
     {
@@ -25,9 +25,9 @@ class ProductService implements IProductService
         }
 
         return $user->products()->create([
-            'name' => $data['product']['name'],
-            'price' => $data['product']['price'],
-            'quantity' => $data['product']['quantity'],
+            'name' => $data['attributes']['name'],
+            'price' => $data['attributes']['price'],
+            'quantity' => $data['attributes']['quantity'],
         ]);
     }
 
