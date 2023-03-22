@@ -8,5 +8,11 @@ use App\Models\Product;
 
 interface IProductService
 {
-    public function createProduct(array $data): Product;
+    public function store(array $data): Product;
+
+    public function show(array $data): Product;
+
+    public function update(array $data): Product;
+
+    public function destroy(array $data): void;
 }

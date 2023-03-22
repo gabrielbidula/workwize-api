@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Exceptions\ProductNotFoundException;
+use App\Exceptions\UserNotFoundException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\StoreProductRequest;
 use App\Http\Resources\Api\ProductResource;
@@ -12,7 +14,7 @@ use Illuminate\Http\JsonResponse;
 
 class ProductController extends Controller
 {
-    public function __construct(protected IProductService $productSevice)
+    public function __construct(protected IProductService $productService)
     {
     }
 
@@ -28,15 +30,12 @@ class ProductController extends Controller
 
         try {
             $this->authorize('create', Product::class);
-        } catch (AuthorizationException $e) {
-            return response()->json(['message' => $e->getMessage()], 403);
+            $product = $this->productService->store(['user_id' => auth()->user()->id, 'product' => $data]);
+        } catch (AuthorizationException $exception) {
+            return response()->json(['message' => $exception->getMessage()], 403);
+        } catch (UserNotFoundException $exception) {
+            return response()->json(['message' => $exception->getMessage()], 404);
         }
-
-        $product = auth()->user()->products()->create([
-            'name' => $data['name'],
-            'price' => $data['price'],
-            'quantity' => $data['quantity'],
-        ]);
 
         return response()->json(new ProductResource($product), 201);
     }
@@ -45,11 +44,12 @@ class ProductController extends Controller
     {
         try {
             $this->authorize('view', $product);
-        } catch (AuthorizationException $e) {
-            return response()->json(['message' => $e->getMessage()], 403);
+            $this->productService->show(['user_id' => auth()->user()->id, 'product_id' => $product->getKey()]);
+        } catch (AuthorizationException $exception) {
+            return response()->json(['message' => $exception->getMessage()], 403);
+        } catch (UserNotFoundException $exception) {
+            return response()->json(['message' => $exception->getMessage()], 404);
         }
-
-        $product = Product::findOrFail($product->getKey());
 
         return response()->json(new ProductResource($product));
     }
@@ -60,11 +60,14 @@ class ProductController extends Controller
 
         try {
             $this->authorize('update', $product);
-        } catch (AuthorizationException $e) {
-            return response()->json(['message' => $e->getMessage()], 403);
+            $this->productService->update(
+                ['user_id' => auth()->user()->id, 'product_id' => $product->getKey(), 'attributes' => $data]
+            );
+        } catch (AuthorizationException $exception) {
+            return response()->json(['message' => $exception->getMessage()], 403);
+        } catch (ProductNotFoundException $exception) {
+            return response()->json(['message' => $exception->getMessage()], 404);
         }
-
-        $product->update($data);
 
         return response()->json(new ProductResource($product));
     }
@@ -73,8 +76,9 @@ class ProductController extends Controller
     {
         try {
             $this->authorize('delete', $product);
-        } catch (AuthorizationException $e) {
-            return response()->json(['message' => $e->getMessage()], 403);
+            $this->productService->destroy(['user_id' => auth()->user()->id, 'product_id' => $product->getKey()]);
+        } catch (AuthorizationException $exception) {
+            return response()->json(['message' => $exception->getMessage()], 403);
         }
 
         $product->delete();

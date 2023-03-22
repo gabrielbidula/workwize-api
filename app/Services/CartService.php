@@ -18,11 +18,13 @@ class CartService implements ICartService
      */
     public function store(array $data): Cart
     {
+        /** @var User $user */
         $user = User::find($data['user_id']);
         if (! $user) {
             throw new UserNotFoundException('User not found.');
         }
 
+        /** @var Cart $cart */
         $cart = Cart::where('user_id', $user->getKey())->whereNull('deleted_at')->first();
         if ($cart) {
             throw new UserAlreadyHasACartException('User already has a cart.');
@@ -36,6 +38,7 @@ class CartService implements ICartService
      */
     public function destroy(array $data): void
     {
+        /** @var User $user */
         $user = User::find($data['user_id']);
         if (! $user) {
             throw new UserNotFoundException('User not found.');
@@ -49,6 +52,7 @@ class CartService implements ICartService
      */
     public function clearCart(array $data): void
     {
+        /** @var User $user */
         $user = User::find($data['user_id']);
         if (! $user) {
             throw new UserNotFoundException('User not found.');
